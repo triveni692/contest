@@ -47,11 +47,81 @@ void DFT(vector <pt>& a, bool inv)
 	}
 }
 
+/* 
+  Following function mutates the vectors, if you don't
+  want them to be mutated, don't pass by ref (remove the '&').
+  Method signature should look like:
+
+vector<pt> multiply(vector<pt> a, vector<pt> b)
+*/
+vector<pt> multiply(vector<pt> & a, vector<pt> & b) {
+	int n = a.size(); // degree of a is 'n-1'
+	int m = b.size(); // degree of b is 'm-1'
+
+	// Since the degree of the resultant polynomial will be n + m - 2,
+	// we need to initialize both the arrays by the nearest power of 2
+	// which is greater than or equal to n + m - 1.
+
+	int nn = 1;
+	while (nn < n + m - 1) nn <<= 1;
+
+	a.resize(nn);
+	b.resize(nn);
+	DFT(a, false);
+	DFT(b, false);
+	for (int i = 0; i < nn; ++i) {
+		a[i] *= b[i];
+	}
+	DFT(a, true);
+	return a;
+}
+
 /* Tested : Ok */
 int main()
 {
 	int n, m;
 	vector<pt> a, b;
+
+	cin >> n; // degree of polynomial a is 'n - 1'
+	a.resize(n);
+	for (int i = 0; i < n; ++i) {
+		cin >> a[i];
+	}
+	cin >> m;
+	b.resize(m);
+	for (int i = 0; i < m; ++i) {
+		cin >> b[i];
+	}
+
+	a = multiply(a, b);
+
+	cout << "With leading zeroes:\n";
+	
+	for(int i = 0; i < a.size(); ++i) {
+		cout << a[i].real() << " ";
+	}
+	cout << "\n";
+
+	// One may ignore the highesr degree coefficients 
+	// which are zero by chosing a suitable epsilon.
+
+	cout << "After removing the leading zeroes:\n";
+
+	const double eps = 1e-9;
+
+	int nn = a.size() - 1; // degree of the result
+	while (nn > 0) {
+		if (abs(a[nn].real()) < eps) nn -= 1;
+		else break;
+	}
+	for (int i = 0; i <= nn; ++i) {
+		cout << a[i].real() << " ";
+	}
+	cout << "\n";
+
+	
+	/*
+	Performance test
 	n = m = 40000;
 
 	a.resize(n);
@@ -67,7 +137,8 @@ int main()
 		b[i] = rand() % 10000007;
 	}
 
-//	vector <int> ans = f.multiply(a, b);
+	vector <int> ans = f.multiply(a, b);
+	*/
 
 	return 0;
 }
