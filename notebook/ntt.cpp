@@ -28,8 +28,8 @@ void ntt(int a[], int n, bool inv, int gen = 3) {
 	}
 	for (int len = 1; len < n; len <<= 1) {
 		w = ws.back(); ws.pop_back();
-		for (int i = 0, c = 1; i < n; i += (len<<1), c = 1) {
-			for (int j = 0; j < len; j++, muls(c, w)) {
+		for (int i = 0; i < n; i += (len<<1)) {
+			for (int j = 0, c = 1; j < len; j++, muls(c, w)) {
 				int u = a[i+j], v = mul(a[i+j+len], c);
 				a[i+j] = add(u, v), a[i+j+len] = sub(u, v);
 			}
