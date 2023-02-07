@@ -5,7 +5,6 @@ using namespace std;
 template<typename node>
 class LazyTree {
 public:
-	
 	int n, iDel; // segtree size will be '2*n-1'
 	vector<node> tree;
 	LazyTree(int n, int one_based): n(n), iDel(one_based) { tree.resize(2*n+1); }
@@ -81,7 +80,7 @@ public:
 	}
 
 	void print() {
-		vector<string> res = print_segtree(0, 0 + iDel, n-1 + iDel);
+		vector<string> res = print_segtree(0, iDel, n-1 + iDel);
 		int n = (int)res.size() - 2;
 		for (auto & s: res) {
 			cout << s << "\n";
