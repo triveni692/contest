@@ -203,28 +203,25 @@ public:
 
 struct node {
 	int val, carry;
+
+	// @Required
 	void merge(node & left, node & right, int l, int r) {
 		val = std::max(left.val, right.val);
 		carry = 0;
 	}
 
+	// @Required
 	void split(node & left, node & right, int l, int r) {
 		int m = (l + r) >> 1;
-		left.update(carry, l, m);
-		right.update(carry, m+1, r);
+		left.carry += carry; left.val += carry;
+		right.carry += carry; right.carry += carry;
 		carry = 0;
-	}
-
-	void update(int v, int l, int r) {
-		val += v;
-		carry += v;
 	}
 
 	string print(int u, int l, int r) {
 		string res;
 		stringstream ss(res);
 		ss << "(" << u << ":" << l << "_" << r << "|";
-		// ss << val << ", " << carry;
 		// ss << val << "," << carry;
 		ss << ")";
 		return ss.str();
