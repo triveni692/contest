@@ -2,40 +2,13 @@
 
 using namespace std;
 
-class Segtree {
+template<typename node>
+class LazyTree {
 public:
-	struct node {
-		int val, carry;
-		void merge(node & left, node & right, int l, int r) {
-			val = std::max(left.val, right.val);
-			carry = 0;
-		}
-
-		void split(node & left, node & right, int l, int r) {
-			int m = (l + r) >> 1;
-			left.update(carry, l, m);
-			right.update(carry, m+1, r);
-			carry = 0;
-		}
-
-		void update(int v, int l, int r) {
-			val += v;
-			carry += v;
-		}
-
-		string print(int u, int l, int r) {
-			string res;
-			stringstream ss(res);
-			ss << "(" << u << ":" << l << "_" << r << "|";
-			// ss << val << ", " << carry;
-			// ss << val << "," << carry;
-			ss << ")";
-			return ss.str();
-		}
-	};
+	
 	int n, iDel; // segtree size will be '2*n-1'
 	vector<node> tree;
-	Segtree(int n, int one_based): n(n), iDel(one_based) { tree.resize(2*n+1); }
+	LazyTree(int n, int one_based): n(n), iDel(one_based) { tree.resize(2*n+1); }
 
 	template<typename T>
 	static T max(const T & a, const T & b) {
@@ -227,7 +200,37 @@ public:
 		return left_search(0, iDel, n-1 + iDel, i, f);
 	}
 };
-using node = Segtree::node;
+
+struct node {
+	int val, carry;
+	void merge(node & left, node & right, int l, int r) {
+		val = std::max(left.val, right.val);
+		carry = 0;
+	}
+
+	void split(node & left, node & right, int l, int r) {
+		int m = (l + r) >> 1;
+		left.update(carry, l, m);
+		right.update(carry, m+1, r);
+		carry = 0;
+	}
+
+	void update(int v, int l, int r) {
+		val += v;
+		carry += v;
+	}
+
+	string print(int u, int l, int r) {
+		string res;
+		stringstream ss(res);
+		ss << "(" << u << ":" << l << "_" << r << "|";
+		// ss << val << ", " << carry;
+		// ss << val << "," << carry;
+		ss << ")";
+		return ss.str();
+	}
+};
+using Segtree = LazyTree<node>;
 
 int main() {
 	int n; cin >> n;
