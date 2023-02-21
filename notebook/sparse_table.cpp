@@ -43,7 +43,6 @@ public:
 		return ans;
 	}
 	~SparseTable() {
-		for (auto & v: data) v.clear();
 		data.clear();
 	}
 };

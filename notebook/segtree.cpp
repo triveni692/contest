@@ -125,7 +125,7 @@ public:
 		int lt, rt, m; subtree_info(u, l, r, lt, rt, m);
 		tree[u].split(tree[lt], tree[rt], l, r);
 		int res = right_search(lt, l, m, i, f);
-		if (res < n) return res;
+		if (res < n + iDel) return res;
 		return right_search(rt, m+1, r, i, f);
 	}
 
@@ -135,7 +135,7 @@ public:
 		int lt, rt, m; subtree_info(u, l, r, lt, rt, m);
 		tree[u].split(tree[lt], tree[rt], l, r);
 		int res = left_search(rt, m+1, r, i, f);
-		if (res >= 0) return res;
+		if (res >= iDel) return res;
 		return left_search(lt, l, m, i, f);
 	}
 
