@@ -13,64 +13,45 @@
 
 using namespace std;
 
-typedef long long LL;
+typedef long long ll;
 
-class Hashing
-{
+inline int pow_(long long a, int n, int p){
+int r=1;while(n){if(n&1)r=r*a%p;n>>=1;a=a*a%p;}return r;}
+
+template<const int Base, const int Modulo>
+class Hashing {
 public:
-	const LL BASE = 256, mod = 1e9+7;
-	LL * ipow, * hash;
-	int n;
-	Hashing(string& str)
-	{
-		n = str.length();
-		ipow = new LL[n];
-		hash = new LL[n];
+	Hashing(string& str) : n(str.length()) {
+		ipow.resize(n);
+		hash.resize(n);
 		
 		ipow[0] = 1;
 		hash[0] = str[0];
 
-		LL inv = pow_(BASE, mod - 2, mod);
-		LL prv = 1;
+		ll inv = pow_(Base, Modulo - 2, Modulo);
+		ll prv = 1;
 
-		for(int i = 1; i < n; ++i)
-		{
-			prv = prv * BASE % mod;
-			ipow[i] = ipow[i-1] * inv % mod;
-			hash[i] = hash[i-1] + prv * str[i] % mod;
-			if(hash[i] >= mod) hash[i] -= mod;
+		for(int i = 1; i < n; ++i) {
+			prv = prv * Base % Modulo;
+			ipow[i] = ipow[i-1] * inv % Modulo;
+			hash[i] = hash[i-1] + prv * str[i] % Modulo;
+			if(hash[i] >= Modulo) hash[i] -= Modulo;
 		}
 	}
-	~Hashing()
-	{
-		delete ipow;
-		delete hash;
-	}
-
-	LL getHash(int s = 0, int e = -1)
-	{
-		if (e == -1) e = n-1;
-		LL ans = hash[e];
-		if(s > 0)
-		{
+	int get_hash(int s = 0, int e = -1) {
+		if (e == -1) e += n; 
+		ll ans = hash[e];
+		if(s > 0) {
 			ans = ans - hash[s-1];
-			if(ans < 0) ans += mod;
-			ans = ans * ipow[s] % mod;
+			if(ans < 0) ans += Modulo;
+			ans = ans * ipow[s] % Modulo;
 		}
 		return ans;
 	}
-
-	LL pow_(LL a, LL b, LL mod)
-	{
-		LL ans = 1;
-		while(b)
-		{
-			if(b & 1) ans = ans * a % mod;
-			b >>= 1;
-			a = a * a % mod;
-		}
-		return ans;
-	}
+private:
+	typedef long long ll;
+	vector<int> ipow, hash;
+	int n;
 };
 
 /* Tested : Ok. */
@@ -79,13 +60,13 @@ int main()
 	string str;
 	cin >> str;
 	unordered_set <string> uset;
-	set <LL> st;
-	Hashing hs(str);
+	set <ll> st;
+	Hashing<256,(int)1e9+7> hs(str);
 	for(int i = 0; i < str.length(); ++i)
 		for(int l = 1; i + l <= str.length(); ++l)
 		{
 			uset.insert(str.substr(i, l));
-			st.insert(hs.getHash(i, i+l-1));
+			st.insert(hs.get_hash(i, i+l-1));
 		}
 	cerr << st.size() << " " << uset.size() << endl;
 	assert(st.size() == uset.size());
