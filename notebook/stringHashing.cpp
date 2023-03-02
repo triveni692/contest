@@ -15,13 +15,19 @@ using namespace std;
 
 typedef long long ll;
 
+const int mod = 1e9+7;
+
 inline int pow_(long long a, int n, int p){
 int r=1;while(n){if(n&1)r=r*a%p;n>>=1;a=a*a%p;}return r;}
 
 template<const int Base, const int Modulo>
 class Hashing {
-public:
-	Hashing(string& str) : n(str.length()) {
+private:
+	typedef long long ll;
+	vector<int> ipow, hash;
+	int n;
+	template<typename T>
+	void create_hash(const T * str) {
 		ipow.resize(n);
 		hash.resize(n);
 		
@@ -38,6 +44,11 @@ public:
 			if(hash[i] >= Modulo) hash[i] -= Modulo;
 		}
 	}
+public:
+	Hashing (string & s) : n(s.size()) { create_hash(s.data()); }
+	template<typename T>
+	Hashing (const T * s, int n_) : n(n_) { create_hash(s); }
+
 	int get_hash(int s = 0, int e = -1) {
 		if (e == -1) e += n; 
 		ll ans = hash[e];
@@ -48,11 +59,8 @@ public:
 		}
 		return ans;
 	}
-private:
-	typedef long long ll;
-	vector<int> ipow, hash;
-	int n;
 };
+using Hash = Hashing<256, mod>;
 
 /* Tested : Ok. */
 int main()
@@ -61,12 +69,14 @@ int main()
 	cin >> str;
 	unordered_set <string> uset;
 	set <ll> st;
-	Hashing<256,(int)1e9+7> hs(str);
+	vector<int> v(str.begin(), str.end());
+	Hash h(v.data(), v.size());
+
 	for(int i = 0; i < str.length(); ++i)
 		for(int l = 1; i + l <= str.length(); ++l)
 		{
 			uset.insert(str.substr(i, l));
-			st.insert(hs.get_hash(i, i+l-1));
+			st.insert(h.get_hash(i, i+l-1));
 		}
 	cerr << st.size() << " " << uset.size() << endl;
 	assert(st.size() == uset.size());
